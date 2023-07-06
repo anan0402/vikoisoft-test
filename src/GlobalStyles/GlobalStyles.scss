@@ -1,0 +1,39 @@
+:root {
+  --primary: #f57c00;
+  --text: #161823;
+  --border-color: rgb(220, 221, 222);
+  --background: #e0eafc;
+  --background-hover: #d3d8dd;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  text-rendering: optimizespeed;
+  color: var(--text);
+  overflow-x: hidden;
+  background-color: var(--background);
+  min-height: 100vh;
+}
+
+button,
+input,
+[tabindex] {
+  outline: none;
+  border: none;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+li {
+  list-style-type: none;
+}
