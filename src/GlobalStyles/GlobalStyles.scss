@@ -1,6 +1,6 @@
 :root {
-  --primary: #f57c00;
-  --text: #161823;
+  --primary: #ff9000;
+  --text: #414141;
   --border-color: rgb(220, 221, 222);
   --background: #e0eafc;
   --background-hover: #d3d8dd;
@@ -19,7 +19,6 @@ body {
   color: var(--text);
   overflow-x: hidden;
   background-color: var(--background);
-  min-height: 100vh;
 }
 
 button,
