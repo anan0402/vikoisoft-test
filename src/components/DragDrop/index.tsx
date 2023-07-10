@@ -7,9 +7,8 @@ const cx = classNames.bind(style);
 export function DragDrop() {
   //All states
   const [active, setActive] = useState(false);
-  const [notTXTFile, setNotTXTFile] = useState(false);
   const [file, setFile] = useState<File | undefined>();
-  const [fileRequirement, setFileRequirement] = useState(false);
+  const [isValidFile, setValidFile] = useState(false);
   const [wordsArray, setWordsArray] = useState<string[]>([]);
   const [moreApperance, setMoreApperance] = useState<
     { word: string; count: any }[]
@@ -75,8 +74,8 @@ export function DragDrop() {
       worker.onmessage = (event) => {
         const content = event.data as string;
         const statistic = processFileContent(content);
-        if (statistic === false) setFileRequirement(true);
-        else setFileRequirement(false);
+        if (statistic === false) setValidFile(true);
+        else setValidFile(false);
         worker.terminate();
       };
       worker.onerror = (e) => {
@@ -89,9 +88,9 @@ export function DragDrop() {
   useEffect(() => {
     if (file) {
       if (file.type === "text/plain") {
-        setNotTXTFile(false);
+        setValidFile(false);
       } else {
-        setNotTXTFile(true);
+        setValidFile(true);
       }
     }
   }, [file]);
@@ -135,25 +134,18 @@ export function DragDrop() {
             Upload document support for TXT files
           </span>
         </div>
-        {notTXTFile && (
+        {isValidFile && (
           <div className={cx("error-upload")}>
             <span className={cx("error-message")}>
-              Whoops! This file is the wrong format. Try choosing a valid TXT
-              for conversion.
-            </span>
-          </div>
-        )}
-        {fileRequirement && (
-          <div className={cx("error-upload")}>
-            <span className={cx("error-message")}>
-              The file must not contain any digits or characters that are not
+              Whoops! This file is satisfy the condition. The file must be .txt
+              extension and not contain any digits or characters that are not
               alphanumeric, comma (,), space ( ), or period (.). Additionally,
               the file must contain more than three distinct words.
             </span>
           </div>
         )}
       </div>
-      {wordsArray.length >= 1 && !notTXTFile && (
+      {wordsArray.length >= 1 && !isValidFile && (
         <div className={cx("result")}>
           <table className={cx("word-number-table")}>
             <thead className={cx("table-header")}>
