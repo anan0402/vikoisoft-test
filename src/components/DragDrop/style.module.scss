@@ -76,3 +76,63 @@
   font-size: 18px;
   color: #721c24;
 }
+.result {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.word-number-table {
+  border: 2px solid #dacbcb;
+  border-radius: 5px;
+  background-color: white;
+  padding: 15px;
+  width: 60%;
+  font-size: 18px;
+}
+.table-header {
+  text-align: center;
+}
+.header-text {
+  margin-bottom: 15px;
+}
+.table-row {
+  border: 2px solid #dacbcb;
+}
+.body-row {
+  display: flex;
+}
+.rank {
+  flex: 1;
+}
+.word {
+  width: 30%;
+}
+.count {
+  width: 20%;
+}
+.content {
+  display: block;
+  margin: 5px;
+}
+
+//Responsive
+
+@media (max-width: 46.1875em) {
+  .heading {
+    font-size: 30px;
+  }
+  .drag-content {
+    min-width: 150px;
+  }
+  .title {
+    font-size: 20px;
+  }
+  .text {
+    font-size: 16px;
+  }
+  .word-number-table{
+    font-size: 15px;
+  }
+}

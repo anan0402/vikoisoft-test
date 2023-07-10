@@ -1,1 +1,0 @@
- The file must not contain any digits or characters that are not alphanumeric, comma (,), space ( ), or period (.). Additionally, the file must contain more than three distinct words.

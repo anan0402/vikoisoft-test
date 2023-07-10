@@ -10,7 +10,7 @@ export function DragDrop() {
   const [notTXTFile, setNotTXTFile] = useState(false);
   const [file, setFile] = useState<File | undefined>();
   const [fileRequirement, setFileRequirement] = useState(false);
-  const [wordsArray, setWordsArray] = useState<string[] | boolean>([]);
+  const [wordsArray, setWordsArray] = useState<string[]>([]);
   const [moreApperance, setMoreApperance] = useState<
     { word: string; count: any }[]
   >([]);
@@ -49,26 +49,25 @@ export function DragDrop() {
   const processFileContent = (content: string) => {
     if (/([\d]|[^\w ,.])/.test(content)) return false;
     const words = content.toLowerCase().match(/\w+/g);
-    const statistic = new Map<string, number>();
+    const statistic: Record<string, number> = {};
 
     words?.forEach((word) => {
-      // @ts-ignore
       statistic[word] = (statistic[word] || 0) + 1;
     });
     if (!words || words.length < 3) return false;
 
     const sortedWords = Object.keys(statistic).sort(
-      // @ts-ignore
       (a, b) => statistic[b] - statistic[a]
     );
+
     const array = sortedWords
       .slice(0, 3)
       .map((word) => ({ word, count: statistic[word] }));
     setMoreApperance(array);
     setWordsArray(sortedWords);
-    return sortedWords;
+    return true;
   };
-  console.log(processFileContent);
+
   const workerReadFile = (selectedFile: File | undefined) => {
     if (selectedFile) {
       const url = new URL("../../functions/worker.js", import.meta.url);
@@ -78,7 +77,6 @@ export function DragDrop() {
         const statistic = processFileContent(content);
         if (statistic === false) setFileRequirement(true);
         else setFileRequirement(false);
-        setWordsArray(processFileContent(content));
         worker.terminate();
       };
       worker.onerror = (e) => {
@@ -155,16 +153,59 @@ export function DragDrop() {
           </div>
         )}
       </div>
-      <div className={cx("result")}>
-        <table className={cx("word-number")}>
-          <thead>
-            <tr>
-              <h4>The total number of distinct words:</h4> {wordsArray.length}
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      {wordsArray.length >= 1 && !notTXTFile && (
+        <div className={cx("result")}>
+          <table className={cx("word-number-table")}>
+            <thead className={cx("table-header")}>
+              <h4 className={cx("header-text")}>
+                The total number of distinct words: {wordsArray.length}
+              </h4>
+            </thead>
+            <tbody>
+              <tr className={cx("body-row")}>
+                <th className={cx("rank")}>
+                  <span className={cx("content")}>1 st</span>
+                </th>
+                <th className={cx("word")}>
+                  <span className={cx("content")}>{moreApperance[0].word}</span>
+                </th>
+                <th className={cx("count")}>
+                  <span className={cx("content")}>
+                    {moreApperance[0].count}
+                  </span>
+                </th>
+              </tr>
+              <tr className={cx("body-row")}>
+                <th className={cx("rank")}>
+                  <span className={cx("content")}>2 nd</span>
+                </th>
+                <th className={cx("word")}>
+                  <span className={cx("content")}>{moreApperance[1].word}</span>
+                </th>
+                <th className={cx("count")}>
+                  <span className={cx("content")}>
+                    {moreApperance[1].count}
+                  </span>
+                </th>
+              </tr>
+              <tr className={cx("body-row")}>
+                <th className={cx("rank")}>
+                  <span className={cx("content")}>3 rd</span>
+                </th>
+                <th className={cx("word")}>
+                  <span className={cx("content")}>{moreApperance[2].word}</span>
+                </th>
+
+                <th className={cx("count")}>
+                  <span className={cx("content")}>
+                    {moreApperance[2].count}
+                  </span>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   FaCommentDots,
   FaTelegramPlane,
@@ -24,9 +24,6 @@ export function ChatBox() {
   const [sendMessage, setSendMessage] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
-
-  //useRef
-  let menuIcon = useRef(null);
 
   //All functions
   const handleShowChatBox = () => {
@@ -150,17 +147,20 @@ export function ChatBox() {
         </div>
       )}
       {showEmoji && (
-        <div className={cx("list-icon")} ref={menuIcon}>
-          <EmojiPicker
-            height={360}
-            width={280}
-            autoFocusSearch={false}
-            lazyLoadEmojis
-            skinTonesDisabled
-            onEmojiClick={(e) => {
-              setInputMessage(`${inputMessage}${e.emoji}`);
-            }}
-          />
+        <div className={cx("icon-wrapper")}>
+          <div className={cx("item")} onClick={handleShowEmoji}></div>
+          <div className={cx("list-icon")}>
+            <EmojiPicker
+              height={360}
+              width={280}
+              autoFocusSearch={false}
+              lazyLoadEmojis
+              skinTonesDisabled
+              onEmojiClick={(e) => {
+                setInputMessage(`${inputMessage}${e.emoji}`);
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
