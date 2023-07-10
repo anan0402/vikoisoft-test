@@ -9,11 +9,13 @@ export function DragDrop() {
   const [active, setActive] = useState(false);
   const [notTXTFile, setNotTXTFile] = useState(false);
   const [file, setFile] = useState<File | undefined>();
-  const [fileContent, setFileContent] = useState("");
-
+  const [fileRequirement, setFileRequirement] = useState(false);
+  const [wordsArray, setWordsArray] = useState<string[] | boolean>([]);
+  const [moreApperance, setMoreApperance] = useState<
+    { word: string; count: any }[]
+  >([]);
   //useRef
   const inputRef = useRef<HTMLInputElement>(null);
-
   //Functions that handle all the upload file events\
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -37,7 +39,6 @@ export function DragDrop() {
       setActive(true);
       setFile(e.target.files[0]);
       workerReadFile(e.target.files[0]);
-      
     }
   };
   const handleOnClick = () => {
@@ -60,18 +61,24 @@ export function DragDrop() {
       // @ts-ignore
       (a, b) => statistic[b] - statistic[a]
     );
-    return sortedWords.slice(0, 3);
+    const array = sortedWords
+      .slice(0, 3)
+      .map((word) => ({ word, count: statistic[word] }));
+    setMoreApperance(array);
+    setWordsArray(sortedWords);
+    return sortedWords;
   };
+  console.log(processFileContent);
   const workerReadFile = (selectedFile: File | undefined) => {
     if (selectedFile) {
       const url = new URL("../../functions/worker.js", import.meta.url);
       const worker = new Worker(url);
       worker.onmessage = (event) => {
         const content = event.data as string;
-        setFileContent(content);
         const statistic = processFileContent(content);
-        if (statistic === false) setNotTXTFile(true);
-        // display 3 common appear
+        if (statistic === false) setFileRequirement(true);
+        else setFileRequirement(false);
+        setWordsArray(processFileContent(content));
         worker.terminate();
       };
       worker.onerror = (e) => {
@@ -80,12 +87,10 @@ export function DragDrop() {
       worker.postMessage(selectedFile);
     }
   };
-
   // useEffect
   useEffect(() => {
     if (file) {
       if (file.type === "text/plain") {
-        console.log("Correct type");
         setNotTXTFile(false);
       } else {
         setNotTXTFile(true);
@@ -135,11 +140,30 @@ export function DragDrop() {
         {notTXTFile && (
           <div className={cx("error-upload")}>
             <span className={cx("error-message")}>
-              Whoops! This file is the wrong format. Try choosing a valid PDF
+              Whoops! This file is the wrong format. Try choosing a valid TXT
               for conversion.
             </span>
           </div>
         )}
+        {fileRequirement && (
+          <div className={cx("error-upload")}>
+            <span className={cx("error-message")}>
+              The file must not contain any digits or characters that are not
+              alphanumeric, comma (,), space ( ), or period (.). Additionally,
+              the file must contain more than three distinct words.
+            </span>
+          </div>
+        )}
+      </div>
+      <div className={cx("result")}>
+        <table className={cx("word-number")}>
+          <thead>
+            <tr>
+              <h4>The total number of distinct words:</h4> {wordsArray.length}
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
   );

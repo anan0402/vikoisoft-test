@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaCommentDots,
   FaTelegramPlane,
   FaTimes,
   FaGrinAlt,
+  FaUsers,
 } from "react-icons/fa";
 import classNames from "classnames/bind";
 import style from "./style.module.scss";
@@ -22,6 +23,10 @@ export function ChatBox() {
   const [showChatBox, setShowChatBox] = useState(false);
   const [sendMessage, setSendMessage] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+
+  //useRef
+  let menuIcon = useRef(null);
 
   //All functions
   const handleShowChatBox = () => {
@@ -63,6 +68,9 @@ export function ChatBox() {
       setInputMessage("");
     }
   };
+  const handleShowEmoji = () => {
+    setShowEmoji(!showEmoji);
+  };
 
   return (
     <div className={cx("wrapper")}>
@@ -91,6 +99,14 @@ export function ChatBox() {
             </div>
           </div>
           <div className={cx("chatbox-content")}>
+            {sendMessage.length === 0 && (
+              <div className={cx("anouncememt")}>
+                <FaUsers className={cx("user-icon")} />
+                <p className={cx("anouncement-text")}>
+                  Start conversation with your friend
+                </p>
+              </div>
+            )}
             {sendMessage.length >= 1 &&
               sendMessage.map((data) => {
                 if (data.type) {
@@ -104,7 +120,7 @@ export function ChatBox() {
                   return (
                     <div className={cx("recieved-message")}>
                       <span className={cx("message-text")}>{data.text}</span>
-                      <span className={cx("time")}>{time}</span>
+                      <span className={cx("time")}>{data.time}</span>
                     </div>
                   );
                 }
@@ -123,9 +139,9 @@ export function ChatBox() {
                   onChange={handelOnChangeInput}
                 ></input>
               </div>
-              <button className={cx("emoji-btn")}>
+              <div className={cx("emoji-btn")} onClick={handleShowEmoji}>
                 <FaGrinAlt />
-              </button>
+              </div>
               <button className={cx("submit-btn")} type="submit">
                 <FaTelegramPlane />
               </button>
@@ -133,13 +149,20 @@ export function ChatBox() {
           </div>
         </div>
       )}
-      <EmojiPicker
-        lazyLoadEmojis
-        skinTonesDisabled
-        onEmojiClick={(e) => {
-          setInputMessage(`${inputMessage}${e.emoji}`);
-        }}
-      />
+      {showEmoji && (
+        <div className={cx("list-icon")} ref={menuIcon}>
+          <EmojiPicker
+            height={360}
+            width={280}
+            autoFocusSearch={false}
+            lazyLoadEmojis
+            skinTonesDisabled
+            onEmojiClick={(e) => {
+              setInputMessage(`${inputMessage}${e.emoji}`);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
