@@ -1,6 +1,6 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Project Note !!!
+- The selected file must contain English alphabet character
+- This project should be tested on Windows OS for the best result
 
 ## Available Scripts
 
